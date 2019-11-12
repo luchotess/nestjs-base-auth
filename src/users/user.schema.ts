@@ -7,7 +7,8 @@ export const UserSchema = new mongoose.Schema({
     username: String,
     password: String,
     firstname: String,
-    lastname: String
+    lastname: String,
+    role: String
 });
 
 UserSchema.methods.validatePassword = function (password) {
@@ -16,6 +17,16 @@ UserSchema.methods.validatePassword = function (password) {
 
 UserSchema.methods.hashPassword = async function (password = null) {
     this.password = await bcrypt.hash(password ? password : this.password, 10);
+};
+
+UserSchema.methods.serialize = async function () {
+   return {
+       _id: this._id,
+       username: this.username,
+       firstname: this.firstname,
+       lastname: this.lastname,
+       role: this.role
+   };
 };
 
 UserSchema.pre('save', async function (next) {

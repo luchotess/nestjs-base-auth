@@ -1,7 +1,8 @@
-import {Controller, Get, Post, Put, Delete, Param, Body, HttpException, HttpStatus} from '@nestjs/common';
+import {Controller, Get, Post, Put, Delete, Param, Body, HttpException, HttpStatus, UseGuards, Request} from '@nestjs/common';
 import { CreateUserDto } from './create-user.dto';
 import { UsersService } from './users.service';
 import { User } from './user.interface';
+import {AuthGuard} from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
@@ -12,8 +13,10 @@ export class UsersController {
         return await this.usersService.create(createUserDto);
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Get()
-    async findAll (): Promise<User[]> {
+    async findAll (@Request() req): Promise<User[]> {
+        console.log(req.user);
         return this.usersService.findAll();
     }
 
